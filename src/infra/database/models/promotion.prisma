@@ -1,0 +1,64 @@
+model PromotionSales {
+    id      String @id
+    brandId String
+
+    name    String
+    startAt DateTime
+    endAt   DateTime
+    active  Boolean
+
+    Promotion_Products PromotionProducts[]
+    PromotionStores    PromotionStores[]
+
+    @@map("promotion_sales")
+}
+
+model PromotionProducts {
+    productId   String
+    promotionId String
+    price       Decimal @db.Money
+
+    promotion PromotionSales @relation(fields: [promotionId], references: [id])
+    product   Products       @relation(fields: [productId], references: [id])
+
+    @@id([productId, promotionId])
+    @@map("promotion_products")
+}
+
+model PromotionStores {
+    promotionId String
+    storeId     String
+
+    promotion PromotionSales @relation(fields: [promotionId], references: [id])
+    store     Stores         @relation(fields: [storeId], references: [id])
+
+    @@id([promotionId, storeId])
+    @@map("promotion_stores")
+}
+
+//@relations
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Brands {
+    id String @id
+
+    @@map("brands")
+}
+
+model Products {
+    id                 String              @id
+    Promotion_Products PromotionProducts[]
+
+    @@map("products")
+}
+
+model Stores {
+    id              String            @id
+    PromotionStores PromotionStores[]
+
+    @@map("stores")
+}

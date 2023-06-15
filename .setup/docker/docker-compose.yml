@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:alpine
+    container_name: store_db
+    environment:
+      POSTGRES_DB: store
+      POSTGRES_PASSWORD: store_pass
+      POSTGRES_USER: store_owner
+    ports:
+      - 7001:5432
+    restart: on-failure:3
+
+  redis:
+    image: redis
+    command: redis-server --requirepass store_pass
+    ports:
+      - '7002:6379'

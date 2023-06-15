@@ -1,0 +1,5 @@
+export enum ROLE {
+  DEVELOPER = 'DEVELOPER',
+  USER = 'USER',
+  BRAND_OWNER = 'BRAND_OWNER',
+}

@@ -1,0 +1,65 @@
+model Brands {
+    id         String       @id
+    name       String       @unique
+    createdAt  DateTime     @default(now())
+    updateAt   DateTime     @default(now())
+    deletedAt  DateTime?
+    StoreGroup StoreGroup[]
+    UserBrand  UserBrand[]
+
+    @@map("brands")
+}
+
+model Stores {
+    id         String       @id
+    name       String       @unique
+    createdAt  DateTime     @default(now())
+    updateAt   DateTime     @default(now())
+    deletedAt  DateTime?
+    StoreGroup StoreGroup[]
+    UserStore  UserStore[]
+
+    @@map("stores")
+}
+
+model StoreGroup {
+    brandId String
+    storeId String
+
+    store Stores @relation(fields: [storeId], references: [id])
+    brand Brands @relation(fields: [brandId], references: [id])
+
+    @@id([brandId, storeId])
+    @@map("store_group")
+}
+
+model UserBrand {
+    brandId String
+    userId  String
+
+    user  Users  @relation(fields: [userId], references: [id])
+    brand Brands @relation(fields: [brandId], references: [id])
+
+    @@id([brandId, userId])
+    @@map("user_brand")
+}
+
+model UserStore {
+    storeId String
+    userId  String
+
+    user  Users  @relation(fields: [userId], references: [id])
+    store Stores @relation(fields: [storeId], references: [id])
+
+    @@id([storeId, userId])
+    @@map("user_store")
+}
+
+//@relations
+model Users {
+    id        String      @id
+    UserBrand UserBrand[]
+    UserStore UserStore[]
+
+    @@map("users")
+}

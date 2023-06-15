@@ -1,0 +1,56 @@
+model Categories {
+    id      Int    @id @default(autoincrement())
+    brandId String
+    name    String
+
+    brand    Brands     @relation(fields: [brandId], references: [id])
+    Products Products[]
+
+    @@map("categories")
+}
+
+model Products {
+    id          String  @id
+    brandId     String
+    categoryId  Int
+    name        String
+    description String
+    price       Decimal @db.Money
+    picture     String
+    info        Json
+
+    createdAt DateTime  @default(now())
+    updateAt  DateTime  @default(now())
+    deletedAt DateTime?
+
+    brand        Brands         @relation(fields: [brandId], references: [id])
+    category     Categories     @relation(fields: [categoryId], references: [id])
+    PriceHistory PriceHistory[]
+
+    @@map("products")
+}
+
+model PriceHistory {
+    productId String
+    changedAt DateTime @default(now())
+    price     Decimal  @db.Money
+    product   Products @relation(fields: [productId], references: [id])
+
+    @@id([productId, changedAt])
+    @@map("price_history")
+}
+
+//@relations
+
+model Brands {
+    id         String       @id
+    Categories Categories[]
+    Products   Products[]
+
+    @@map("brands")
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}

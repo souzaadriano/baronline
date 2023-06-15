@@ -1,0 +1,58 @@
+model ConfigurationTypes {
+    name           String           @id()
+    Configurations Configurations[]
+
+    @@map("configuration_types")
+}
+
+model Configurations {
+    id        String    @id()
+    type      String
+    content   Json
+    createdAt DateTime  @default(now())
+    updateAt  DateTime  @default(now())
+    deletedAt DateTime?
+
+    configurationType  ConfigurationTypes   @relation(fields: [type], references: [name])
+    BrandConfiguration BrandConfiguration[]
+    StoreConfiguration StoreConfiguration[]
+
+    @@map("configurations")
+}
+
+model BrandConfiguration {
+    configurationId String
+    brandId         String
+
+    configuration Configurations @relation(fields: [configurationId], references: [id])
+    brand         Brands         @relation(fields: [brandId], references: [id])
+
+    @@id([configurationId, brandId])
+    @@map("brand_configuration")
+}
+
+model StoreConfiguration {
+    configurationId String
+    storeId         String
+
+    configuration Configurations @relation(fields: [configurationId], references: [id])
+    store         Stores         @relation(fields: [storeId], references: [id])
+
+    @@id([configurationId, storeId])
+    @@map("store_configuration")
+}
+
+//@relations
+model Brands {
+    id                 String               @id
+    BrandConfiguration BrandConfiguration[]
+
+    @@map("brands")
+}
+
+model Stores {
+    id                 String               @id
+    StoreConfiguration StoreConfiguration[]
+
+    @@map("stores")
+}
